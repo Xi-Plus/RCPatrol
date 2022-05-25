@@ -1,0 +1,13 @@
+{
+    "env": {
+        "browser": true,
+		"jquery": true
+    },
+	"globals": {
+		"mw": "readonly"
+	},
+	"plugins": ["es5"],
+	"extends": ["eslint:recommended", "plugin:es5/no-es2015"],
+    "rules": {
+    }
+}

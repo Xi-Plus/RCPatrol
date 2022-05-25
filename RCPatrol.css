@@ -1,0 +1,18 @@
+.mw-changeslist-src-mw-edit .unpatrolled {
+	display: inline !important;
+}
+#mw-diff-ntitle4 .patrollink {
+	display: inline !important;
+}
+#mw-content-text span.patrollink {
+	display: inline !important;
+}
+
+/* 將回退功能的編輯視為已巡查 */
+.mw-tag-mw-rollback .unpatrolled {
+	display: none !important;
+}
+
+#pagehistory li.gadget-rcp-not-patrolled {
+	background-color: #ffa;
+}
