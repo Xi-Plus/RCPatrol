@@ -1,13 +1,15 @@
 {
-    "env": {
-        "browser": true,
+	"env": {
 		"jquery": true
-    },
+	},
+	"parserOptions": {
+		"sourceType": "module",
+		"ecmaVersion": 2015
+	},
 	"globals": {
 		"mw": "readonly"
 	},
 	"plugins": ["es5"],
-	"extends": ["eslint:recommended", "plugin:es5/no-es2015"],
-    "rules": {
-    }
+	"extends": ["eslint:recommended"],
+	"rules": {}
 }

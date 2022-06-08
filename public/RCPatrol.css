@@ -13,6 +13,18 @@
 	display: none !important;
 }
 
-#pagehistory li.gadget-rcp-recently-unpatrolled {
-	background-color: #ffa;
+#pagehistory li.gadget-rcp-autopatrolled {
+	background-color: #eaf3ff;
+}
+#pagehistory li.gadget-rcp-patrolled {
+	background-color: #eaf3ff;
+}
+#pagehistory li.gadget-rcp-pending {
+	background-color: #fff2cc;
+}
+
+.gadget-rcp-hist-basic-auto,
+.gadget-rcp-hist-basic-user,
+.gadget-rcp-hist-difflink {
+	font-size: 85%;
 }
