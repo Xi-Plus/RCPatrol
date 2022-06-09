@@ -5,8 +5,9 @@ import babel from '@rollup/plugin-babel';
 export default defineConfig({
 	plugins: [
 		babel({
+			babelHelpers: 'bundled',
 			presets: [[
-				"@babel/preset-env",
+				'@babel/preset-env',
 			]]
 		})
 	],
@@ -15,6 +16,7 @@ export default defineConfig({
 	},
 	build: {
 		minify: false,
+		target: 'es5',
 		lib: {
 			entry: 'src/RCPatrol.js',
 			formats: ['iife'],
