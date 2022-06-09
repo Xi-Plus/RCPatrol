@@ -1,6 +1,6 @@
 {
 	"gadget-rcp-hist-basic-auto": "已自动巡查",
-	"gadget-rcp-hist-basic-user": "已由[[User:$1|$1]]检查",
+	"gadget-rcp-hist-basic-user": "已由[[User:$1|$1]]巡查",
 	"gadget-rcp-hist-pending-difflink": "<b>[[Special:Diff/$1/$2|等候巡查]]</b>",
 	"gadget-rcp-hist-basic": "已巡查修订",
 	"gadget-rcp-hist-pending": "待巡查修订",
