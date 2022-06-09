@@ -200,7 +200,8 @@ function markDiffPatrolStatus() {
 	const $diffToStable = $('<div>').addClass('gadget-rcp-diff-to-stable').appendTo($diffHeaderItems);
 	$diffToStable.css({ 'text-align': 'center' });
 
-	if (mw.config.get('wgCurRevisionId') != last_patrolled_revid
+	if (last_patrolled_revid > 0
+		&& mw.config.get('wgCurRevisionId') != last_patrolled_revid
 		&& (mw.config.get('wgDiffOldId') != last_patrolled_revid
 			|| mw.config.get('wgDiffNewId') != mw.config.get('wgCurRevisionId'))
 	) {
@@ -261,7 +262,7 @@ async function main() {
 		markHistByAutopatrollers();
 		markHistByPatrolLog();
 	}
-	if (mw.config.get('wgDiffNewId')) {
+	if (mw.config.get('wgDiffNewId') && mw.config.get('wgDiffOldId')) {
 		await getPatrolRecords();
 		mw.hook('wikipage.diff').add(markDiffPatrolStatus);
 	}

@@ -1,0 +1,41 @@
+name: Deploy to Wikipedia (main branch)
+
+on:
+  push:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install deploy dependencies
+        run: |
+          pip install mwparserfromhell>=0.5.0 pywikibot
+          npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Get short sha
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Run deploy script
+        env:
+          BOT_NAME: ${{ secrets.BOT_NAME }}
+          BOT_PASS: ${{ secrets.BOT_PASS }}
+        run: |
+          echo "('Xiplus', BotPassword('${BOT_NAME}', '${BOT_PASS}'))" > user-password.py
+          chmod 600 user-config.py user-password.py
+          python3 deploy.py --file dist/RCPatrol.iife.js --target MediaWiki:Gadget-RCPatrol.js --summary "${{ steps.vars.outputs.sha_short }} ${{ github.event.head_commit.message }}"
+          python3 deploy.py --file dist/RCPatrol.css --target MediaWiki:Gadget-RCPatrol.css --summary "${{ steps.vars.outputs.sha_short }} ${{ github.event.head_commit.message }}"
