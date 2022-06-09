@@ -4,5 +4,8 @@
 	"gadget-rcp-hist-pending-difflink": "<b>[[Special:Diff/$1/$2|等候巡查]]</b>",
 	"gadget-rcp-hist-basic": "已巡查修订",
 	"gadget-rcp-hist-pending": "待巡查修订",
-	"gadget-rcp-diff2stable": "查看所有待巡查变更"
+	"gadget-rcp-diff2stable": "查看所有待巡查变更",
+	"gadget-rcp-patrol-multi": "标记$1笔修订为已巡查",
+	"gadget-rcp-patrol-multi-confirm": "您确定要将$1笔修订都标记为已巡查吗？",
+	"gadget-rcp-patrol-notify": "修订版本$1已标记为已巡查。"
 }

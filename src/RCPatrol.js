@@ -22,7 +22,7 @@ function parsedmsg(key, ...parameters) {
 }
 
 const api = new mw.Api();
-const hasPatrolMarks = mw.config.get('wgUserGroups').includes('patroller') || mw.config.get('wgUserGroups').includes('sysop');
+const hasPatrol = mw.config.get('wgUserGroups').includes('patroller') || mw.config.get('wgUserGroups').includes('sysop');
 
 /**
  * 最近巡查的版本ID，為以下數值中的最大值
@@ -104,7 +104,7 @@ async function getPatrolRecords() {
 		'rclimit': 'max',
 		'rctitle': mw.config.get('wgPageName'),
 	};
-	if (hasPatrolMarks) {
+	if (hasPatrol) {
 		query.rcprop += '|patrolled';
 	} else {
 		query.rcprop += '|user';
@@ -114,7 +114,7 @@ async function getPatrolRecords() {
 		recentchanges = data.query.recentchanges;
 	});
 
-	if (!hasPatrolMarks) {
+	if (!hasPatrol) {
 		await getAutopatrollers();
 		await getPatrolLogs();
 	}
@@ -125,7 +125,7 @@ async function getPatrolRecords() {
 	} else {
 		last_patrolled_revid = Math.max(last_patrolled_revid, recentchanges[recentchanges.length - 1].old_revid);
 		last_rc_revid = recentchanges[recentchanges.length - 1].old_revid;
-		if (hasPatrolMarks) {
+		if (hasPatrol) {
 			recentchanges.forEach(recentchange => {
 				if (recentchange.patrolled !== undefined) {
 					last_patrolled_revid = Math.max(last_patrolled_revid, recentchange.revid);
@@ -180,7 +180,7 @@ async function markHistByAutopatrollers() {
 	for (const contribution_row of $('.mw-contributions-list li')) {
 		const revid = $(contribution_row).data('mw-revid');
 		const username = $(contribution_row).find('.history-user a bdi').text();
-		if (autopatrollers.includes(username) && (!hasPatrolMarks || revid <= last_rc_revid)) {
+		if (autopatrollers.includes(username) && (!hasPatrol || revid <= last_rc_revid)) {
 			$(contribution_row).addClass('gadget-rcp-autopatrolled');
 			$('<span>').text('[' + msg('gadget-rcp-hist-basic-auto') + ']').addClass('gadget-rcp-hist-basic-auto').appendTo(contribution_row);
 		}
@@ -250,6 +250,46 @@ function markDiffPatrolStatus() {
 		$newMark.addClass('gadget-rcp-diff-pending');
 		$newMark.text('[' + msg('gadget-rcp-hist-pending') + ']');
 	}
+
+	if (hasPatrol && $('.diff-multi').length > 0) {
+		const revidsToPatrol = [];
+		recentchanges.forEach(recentchange => {
+			if (recentchange.revid <= mw.config.get('wgDiffOldId')) {
+				return;
+			}
+			if (recentchange.revid <= mw.config.get('wgDiffNewId') && recentchange.patrolled === undefined) {
+				revidsToPatrol.push(recentchange.revid);
+			}
+		});
+
+		if (revidsToPatrol.length > 0) {
+			const $diffMulti = $('.diff-multi').first();
+			const $mutilPatrol = $('<span>').addClass('gadget-rcp-multi-patrol').appendTo($diffMulti);
+			const $mutilPatrolLink = $('<a>').attr('href', '#').text(msg('gadget-rcp-patrol-multi', revidsToPatrol.length));
+			$mutilPatrolLink.on('click', function(e) {
+				e.preventDefault();
+				if (!confirm(msg('gadget-rcp-patrol-multi-confirm', revidsToPatrol.length))) {
+					return;
+				}
+
+				$('.patrollink').remove();
+				$mutilPatrol.remove();
+
+				revidsToPatrol.forEach(revid => {
+					api.postWithToken('patrol', {
+						action: 'patrol',
+						revid: revid,
+					}).done(() => {
+						mw.notify(msg('gadget-rcp-patrol-notify', revid));
+					});
+				});
+			})
+
+			$mutilPatrol.append(document.createTextNode('['));
+			$mutilPatrol.append($mutilPatrolLink);
+			$mutilPatrol.append(document.createTextNode(']'));
+		}
+	}
 }
 
 async function main() {
@@ -258,7 +298,7 @@ async function main() {
 	 */
 	if (mw.config.get('wgAction') === 'history') {
 		await getPatrolRecords();
-		if (hasPatrolMarks) {
+		if (hasPatrol) {
 			markHistByRC();
 		} else {
 			markHistWithoutRC();
