@@ -156,7 +156,9 @@ function markHistByRC() {
 			$contribution_row.addClass('gadget-rcp-unpatrolled');
 			if (recentchange.revid > last_patrolled_revid) {
 				$contribution_row.addClass('gadget-rcp-pending');
-				$('<span>').html('[' + parsedmsg('gadget-rcp-hist-pending-difflink', last_patrolled_revid, recentchange.revid) + ']').addClass('gadget-rcp-hist-difflink').appendTo($contribution_row);
+				if (last_patrolled_revid > 0) {
+					$('<span>').html('[' + parsedmsg('gadget-rcp-hist-pending-difflink', last_patrolled_revid, recentchange.revid) + ']').addClass('gadget-rcp-hist-difflink').appendTo($contribution_row);
+				}
 			}
 		}
 	});
@@ -190,7 +192,9 @@ function markHistWithoutRC() {
 		const revid = $(contribution_row).data('mw-revid');
 		if (revid > last_patrolled_revid) {
 			$(contribution_row).addClass('gadget-rcp-pending');
-			$('<span>').html('[' + parsedmsg('gadget-rcp-hist-pending-difflink', last_patrolled_revid, revid) + ']').addClass('gadget-rcp-hist-difflink').appendTo($(contribution_row));
+			if (last_patrolled_revid > 0) {
+				$('<span>').html('[' + parsedmsg('gadget-rcp-hist-pending-difflink', last_patrolled_revid, revid) + ']').addClass('gadget-rcp-hist-difflink').appendTo($(contribution_row));
+			}
 		}
 	}
 }
