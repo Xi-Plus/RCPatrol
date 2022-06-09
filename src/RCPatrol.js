@@ -147,6 +147,10 @@ async function getPatrolRecords() {
 				}
 			});
 		}
+		// 如果沒找到巡查任何被巡查編輯，設為最舊版本的前一版本
+		if (last_patrolled_revid === 0) {
+			last_patrolled_revid = Math.max(last_patrolled_revid, recentchanges[recentchanges.length - 1].old_revid);
+		}
 	}
 }
 
