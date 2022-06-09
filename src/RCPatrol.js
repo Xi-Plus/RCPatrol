@@ -42,7 +42,6 @@ var last_rc_revid = 0;
 var recentchanges = null;
 var autopatrollers = [];
 var patrol_logs = null;
-var patrolled_revids = [];
 
 async function getAutopatrollers() {
 	if (autopatrollers.length > 0) {
@@ -87,7 +86,6 @@ async function getPatrolLogs() {
 	});
 
 	patrol_logs.forEach(log => {
-		patrolled_revids.push(log.params.curid);
 		last_patrolled_revid = Math.max(last_patrolled_revid, log.params.curid);
 	});
 }
@@ -125,6 +123,7 @@ async function getPatrolRecords() {
 		last_patrolled_revid = mw.config.get('wgCurRevisionId');
 		last_rc_revid = mw.config.get('wgCurRevisionId');
 	} else {
+		last_patrolled_revid = Math.max(last_patrolled_revid, recentchanges[recentchanges.length - 1].old_revid);
 		last_rc_revid = recentchanges[recentchanges.length - 1].old_revid;
 		if (hasPatrolMarks) {
 			recentchanges.forEach(recentchange => {
@@ -140,16 +139,7 @@ async function getPatrolRecords() {
 					last_patrolled_revid = Math.max(last_patrolled_revid, recentchange.revid);
 					return;
 				}
-				// 手動巡查
-				if (patrolled_revids.includes(recentchange.user)) {
-					last_patrolled_revid = Math.max(last_patrolled_revid, recentchange.revid);
-					return;
-				}
 			});
-		}
-		// 如果沒找到巡查任何被巡查編輯，設為最舊版本的前一版本
-		if (last_patrolled_revid === 0) {
-			last_patrolled_revid = Math.max(last_patrolled_revid, recentchanges[recentchanges.length - 1].old_revid);
 		}
 	}
 }
