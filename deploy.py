@@ -8,7 +8,7 @@ def main(target, file_to_deploy, summary):
     with open(file_to_deploy, 'r') as source_file:
         page.text = source_file.read()
 
-    page.save(summary)
+    page.save(summary, minor=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
