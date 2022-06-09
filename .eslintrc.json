@@ -1,15 +1,18 @@
 {
 	"env": {
+		"browser": true,
 		"jquery": true
 	},
 	"parserOptions": {
 		"sourceType": "module",
-		"ecmaVersion": 2015
+		"ecmaVersion": 9
 	},
 	"globals": {
 		"mw": "readonly"
 	},
 	"plugins": ["es5"],
 	"extends": ["eslint:recommended"],
-	"rules": {}
+	"rules": {
+		"no-constant-condition": ["error", { "checkLoops": false }]
+	}
 }

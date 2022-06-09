@@ -8,11 +8,6 @@
 	display: inline !important;
 }
 
-/* 將回退功能的編輯視為已巡查 */
-.mw-tag-mw-rollback .unpatrolled {
-	display: none !important;
-}
-
 #pagehistory li.gadget-rcp-autopatrolled {
 	background-color: #eaf3ff;
 }
@@ -27,4 +22,18 @@
 .gadget-rcp-hist-basic-user,
 .gadget-rcp-hist-difflink {
 	font-size: 85%;
+}
+
+.gadget-rcp-diff-ratings {
+	font-size: 90%;
+	font-weight: bold;
+	line-height: 1em;
+	width: 100%;
+}
+
+.gadget-rcp-diff-patrolled {
+	background-color: #eaf3ff;
+}
+.gadget-rcp-diff-pending {
+	background-color: #f8f9fa;
 }
