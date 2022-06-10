@@ -5,6 +5,7 @@
 	"gadget-rcp-hist-basic": "已巡查修訂",
 	"gadget-rcp-hist-pending": "待巡查修訂",
 	"gadget-rcp-diff2stable": "檢視所有待巡查變更",
+	"gadget-rcp-patrol": "巡查",
 	"gadget-rcp-patrol-multi": "標記$1筆修訂為已巡查",
 	"gadget-rcp-patrol-multi-confirm": "您確定要將$1筆修訂都標記為已巡查嗎？",
 	"gadget-rcp-patrol-notify": "修訂版本$1已標記為已巡查。"

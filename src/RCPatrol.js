@@ -24,6 +24,11 @@ function parsedmsg(key, ...parameters) {
 const api = new mw.Api();
 const hasPatrol = mw.config.get('wgUserGroups').includes('patroller') || mw.config.get('wgUserGroups').includes('sysop');
 
+let rcpOptions = {
+	multiPatrolConfirm: true,
+	patrolInRC: false,
+};
+
 /**
  * 最近巡查的版本ID，為以下數值中的最大值
  * 1. 如果沒有任何最近更改（30天），則為目前版本ID
@@ -268,7 +273,9 @@ function markDiffPatrolStatus() {
 			const $mutilPatrolLink = $('<a>').attr('href', '#').text(msg('gadget-rcp-patrol-multi', revidsToPatrol.length));
 			$mutilPatrolLink.on('click', function(e) {
 				e.preventDefault();
-				if (!confirm(msg('gadget-rcp-patrol-multi-confirm', revidsToPatrol.length))) {
+				if (rcpOptions.multiPatrolConfirm
+					&& !confirm(msg('gadget-rcp-patrol-multi-confirm', revidsToPatrol.length))
+				) {
 					return;
 				}
 
@@ -292,7 +299,35 @@ function markDiffPatrolStatus() {
 	}
 }
 
+function addPatrolLinksInRC() {
+	$('.mw-changeslist-reviewstatus-unpatrolled').each(function(key, change) {
+		const revid = $(change).data('mw-revid');
+
+		const $rcPatrol = $('<span>').addClass('gadget-rcp-rc-patrol').appendTo(change);
+		const $rcPatrolLink = $('<a>').attr('href', '#').text(msg('gadget-rcp-patrol'));
+		$rcPatrolLink.on('click', function(e) {
+			e.preventDefault();
+
+			$rcPatrol.remove();
+			$(change).find('.unpatrolled').remove();
+
+			api.postWithToken('patrol', {
+				action: 'patrol',
+				revid: revid,
+			}).done(() => {
+				mw.notify(msg('gadget-rcp-patrol-notify', revid));
+			});
+		})
+
+		$rcPatrol.append(document.createTextNode('['));
+		$rcPatrol.append($rcPatrolLink);
+		$rcPatrol.append(document.createTextNode(']'));
+	});
+}
+
 async function main() {
+	rcpOptions = { ...rcpOptions, ...window.RCPatrolOptions };
+
 	/**
 	 * 在歷史頁面標記未巡查編輯
 	 */
@@ -309,6 +344,16 @@ async function main() {
 	if (mw.config.get('wgDiffNewId') && mw.config.get('wgDiffOldId')) {
 		await getPatrolRecords();
 		mw.hook('wikipage.diff').add(markDiffPatrolStatus);
+	}
+	if (hasPatrol
+		&& ['Recentchanges', 'Recentchangeslinked', 'Watchlist'].includes(mw.config.get('wgCanonicalSpecialPageName'))
+		&& rcpOptions.patrolInRC
+	) {
+		mw.hook('wikipage.content').add(function(item) {
+			if (item.is('div')) {
+				addPatrolLinksInRC();
+			}
+		});
 	}
 }
 
