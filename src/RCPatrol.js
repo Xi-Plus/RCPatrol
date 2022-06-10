@@ -25,6 +25,7 @@ const api = new mw.Api();
 const hasPatrol = mw.config.get('wgUserGroups').includes('patroller') || mw.config.get('wgUserGroups').includes('sysop');
 
 let rcpOptions = {
+	multiPatrol: false,
 	multiPatrolConfirm: true,
 	patrolInRC: false,
 };
@@ -256,7 +257,7 @@ function markDiffPatrolStatus() {
 		$newMark.text('[' + msg('gadget-rcp-hist-pending') + ']');
 	}
 
-	if (hasPatrol && $('.diff-multi').length > 0) {
+	if (hasPatrol && rcpOptions.multiPatrol && $('.diff-multi').length > 0) {
 		const revidsToPatrol = [];
 		recentchanges.forEach(recentchange => {
 			if (recentchange.revid <= mw.config.get('wgDiffOldId')) {
